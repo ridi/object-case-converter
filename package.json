@@ -1,0 +1,54 @@
+{
+  "name": "object-case-converter",
+  "version": "1.0.0",
+  "description": "Convert keys in an javascript object for some cases(camelCase, snake_case, etc.)",
+  "main": "src/index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "jest --forceExit",
+    "build": "webpack",
+    "install": "npm run build"
+  },
+  "jest": {
+    "verbose": true,
+    "collectCoverage": true,
+    "coverageReporters": [
+      "clover",
+      "html"
+    ],
+    "coveragePathIgnorePatterns": [
+      "/node_modules/",
+      "/tests/"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ridibooks/object-case-converter.git"
+  },
+  "keywords": [
+    "converter",
+    "camelcase",
+    "snakecase"
+  ],
+  "author": "Kyungmi Koong <kyungmi.k@ridi.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ridibooks/object-case-converter/issues"
+  },
+  "homepage": "https://github.com/ridibooks/object-case-converter#readme",
+  "dependencies": {
+    "lodash.camelcase": "^4.3.0",
+    "lodash.snakecase": "^4.1.1"
+  },
+  "devDependencies": {
+    "babel-jest": "^19.0.0",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.24.0",
+    "babel-preset-es2015": "^6.24.0",
+    "eslint": "^3.18.0",
+    "eslint-config-ridibooks": "^1.1.0",
+    "jest": "^19.0.2",
+    "webpack": "^2.3.2"
+  }
+}
