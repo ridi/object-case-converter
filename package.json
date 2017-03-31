@@ -1,6 +1,6 @@
 {
   "name": "object-case-converter",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Convert keys in an javascript object for some cases(camelCase, snake_case, etc.)",
   "main": "dist/index.js",
   "directories": {
