@@ -6,24 +6,23 @@ import _snakeCase from 'lodash.snakecase';
  *
  * @param {Object|Array} object - object or array to be converted
  * @param {Function} convertFunc
- * @param {boolean} [isShallow=true] - If it is true, this function will not work as recursive way
+ * @param {boolean} [recursive=false] - If it is true, this function works as recursive way
  * @returns {*}
  * @private
  */
-const _convert = (object, convertFunc, isShallow = true) => {
+const _convert = (object, convertFunc, recursive = false) => {
   if (Array.isArray(object)) {
-    return object.map(value => _convert(value, convertFunc, isShallow));
-  } else if (object && object.constructor.name === 'Object') {
-    // Only if it is plain object
+    return object.map(value => _convert(value, convertFunc, recursive));
+  } else if (object !== null && Object.prototype.toString.call(object) === '[object Object]') {
     const result = {};
     Object.keys(object).forEach((key) => {
-      result[convertFunc(key)] = isShallow ? object[key] : _convert(object[key], convertFunc);
+      result[convertFunc(key)] = recursive ? _convert(object[key], convertFunc, recursive) : object[key];
     });
     return result;
   }
   return object;
 };
 
-export const camelCase = (object, isShallow = true) => _convert(object, _camelCase, isShallow);
-export const snakeCase = (object, isShallow = true) => _convert(object, _snakeCase, isShallow);
+export const camelCase = (object, recursive = false) => _convert(object, _camelCase, recursive);
+export const snakeCase = (object, recursive = false) => _convert(object, _snakeCase, recursive);
 export default { camelCase, snakeCase };

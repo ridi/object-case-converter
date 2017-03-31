@@ -61,8 +61,8 @@ test('snake2camelObject', () => {
   expect(converter.camelCase(null)).toBe(null);
   expect(converter.camelCase(snakeCaseArray)).toEqual(camelCaseArrayShallow);
   expect(converter.camelCase(snakeCaseObject)).toEqual(camelCaseObjectShallow);
-  expect(converter.camelCase(snakeCaseArray, false)).toEqual(camelCaseArray);
-  expect(converter.camelCase(snakeCaseObject, false)).toEqual(camelCaseObject);
+  expect(converter.camelCase(snakeCaseArray, true)).toEqual(camelCaseArray);
+  expect(converter.camelCase(snakeCaseObject, true)).toEqual(camelCaseObject);
 
   const date = new Date();
   expect(converter.camelCase(date)).toBe(date);
@@ -75,8 +75,8 @@ test('camel2snakeObject', () => {
   expect(converter.snakeCase(null)).toBe(null);
   expect(converter.snakeCase(camelCaseArray)).toEqual(snakeCaseArrayShallow);
   expect(converter.snakeCase(camelCaseObject)).toEqual(snakeCaseObjectShallow);
-  expect(converter.snakeCase(camelCaseArray, false)).toEqual(snakeCaseArray);
-  expect(converter.snakeCase(camelCaseObject, false)).toEqual(snakeCaseObject);
+  expect(converter.snakeCase(camelCaseArray, true)).toEqual(snakeCaseArray);
+  expect(converter.snakeCase(camelCaseObject, true)).toEqual(snakeCaseObject);
 
   const date = new Date();
   expect(converter.camelCase(date)).toBe(date);
