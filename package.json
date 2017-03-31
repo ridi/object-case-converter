@@ -8,8 +8,7 @@
   },
   "scripts": {
     "test": "jest --forceExit",
-    "build": "webpack",
-    "install": "npm run build"
+    "build": "webpack"
   },
   "jest": {
     "verbose": true,
