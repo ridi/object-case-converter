@@ -1,6 +1,6 @@
 # object-case-converter
 
-Convert keys in an javascript object for some cases(camelCase, snake_case, etc.)
+Convert keys in an javascript Object or Array to the specific forms(camelCase, snake_case, etc.)
 
 ## Installation
 
