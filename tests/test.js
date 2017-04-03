@@ -1,6 +1,6 @@
 /* global describe test expect beforeAll afterAll */
 
-const converter = require('../src/index');
+import { camelCase, snakeCase } from '../src/index';
 
 const snakeCaseArray = [
   { id: '1', nick_name: 'nick1', contacts: [{ contact_type: 'phone', value: '000-000-000' }, { contact_type: 'email', value: 'test@email.com' }] },
@@ -55,29 +55,29 @@ const camelCaseObjectShallow = {
 };
 
 test('snake2camelObject', () => {
-  expect(converter.camelCase([])).toEqual([]);
-  expect(converter.camelCase({})).toEqual({});
-  expect(converter.camelCase(undefined)).toBe(undefined);
-  expect(converter.camelCase(null)).toBe(null);
-  expect(converter.camelCase(snakeCaseArray)).toEqual(camelCaseArrayShallow);
-  expect(converter.camelCase(snakeCaseObject)).toEqual(camelCaseObjectShallow);
-  expect(converter.camelCase(snakeCaseArray, true)).toEqual(camelCaseArray);
-  expect(converter.camelCase(snakeCaseObject, true)).toEqual(camelCaseObject);
+  expect(camelCase([])).toEqual([]);
+  expect(camelCase({})).toEqual({});
+  expect(camelCase(undefined)).toBe(undefined);
+  expect(camelCase(null)).toBe(null);
+  expect(camelCase(snakeCaseArray)).toEqual(camelCaseArrayShallow);
+  expect(camelCase(snakeCaseObject)).toEqual(camelCaseObjectShallow);
+  expect(camelCase(snakeCaseArray, true)).toEqual(camelCaseArray);
+  expect(camelCase(snakeCaseObject, true)).toEqual(camelCaseObject);
 
   const date = new Date();
-  expect(converter.camelCase(date)).toBe(date);
+  expect(camelCase(date)).toBe(date);
 });
 
 test('camel2snakeObject', () => {
-  expect(converter.snakeCase([])).toEqual([]);
-  expect(converter.snakeCase({})).toEqual({});
-  expect(converter.snakeCase(undefined)).toBe(undefined);
-  expect(converter.snakeCase(null)).toBe(null);
-  expect(converter.snakeCase(camelCaseArray)).toEqual(snakeCaseArrayShallow);
-  expect(converter.snakeCase(camelCaseObject)).toEqual(snakeCaseObjectShallow);
-  expect(converter.snakeCase(camelCaseArray, true)).toEqual(snakeCaseArray);
-  expect(converter.snakeCase(camelCaseObject, true)).toEqual(snakeCaseObject);
+  expect(snakeCase([])).toEqual([]);
+  expect(snakeCase({})).toEqual({});
+  expect(snakeCase(undefined)).toBe(undefined);
+  expect(snakeCase(null)).toBe(null);
+  expect(snakeCase(camelCaseArray)).toEqual(snakeCaseArrayShallow);
+  expect(snakeCase(camelCaseObject)).toEqual(snakeCaseObjectShallow);
+  expect(snakeCase(camelCaseArray, true)).toEqual(snakeCaseArray);
+  expect(snakeCase(camelCaseObject, true)).toEqual(snakeCaseObject);
 
   const date = new Date();
-  expect(converter.camelCase(date)).toBe(date);
+  expect(snakeCase(date)).toBe(date);
 });
