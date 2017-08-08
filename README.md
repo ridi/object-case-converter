@@ -1,5 +1,7 @@
 # object-case-converter
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/ridibooks/object-case-converter.svg)](https://greenkeeper.io/)
+
 Convert keys in an javascript Object or Array to the specific forms(camelCase, snake_case, etc.)
 
 ## Installation
