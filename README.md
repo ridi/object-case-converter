@@ -72,7 +72,7 @@ Convert keys in an object or objects in an array to `snake_case`
 ## Development
 
 ```
-$ git clone git@github.com:ridibooks/object-case-converter.git
+$ git clone git@github.com:ridi/object-case-converter.git
 $ cd object-case-converter
 $ npm install
 ```
