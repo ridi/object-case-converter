@@ -28,7 +28,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ridibooks/object-case-converter.git"
+    "url": "git+https://github.com/ridi/object-case-converter.git"
   },
   "keywords": [
     "converter",
@@ -38,9 +38,9 @@
   "author": "Kyungmi Koong <kyungmi.k@ridi.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/ridibooks/object-case-converter/issues"
+    "url": "https://github.com/ridi/object-case-converter/issues"
   },
-  "homepage": "https://github.com/ridibooks/object-case-converter#readme",
+  "homepage": "https://github.com/ridi/object-case-converter#readme",
   "dependencies": {
     "lodash.camelcase": "^4.3.0",
     "lodash.snakecase": "^4.1.1"
