@@ -1,6 +1,6 @@
 {
-  "name": "@ridi/utils",
-  "version": "1.0.0-alpha",
+  "name": "@ridi/object-case-converter",
+  "version": "2.0.0-alpha",
   "private": true,
   "description": "ridibooks common utilities",
   "main": "dist/index.js",
