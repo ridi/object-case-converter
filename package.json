@@ -17,8 +17,7 @@
     "lodash-es": "^4.17.5"
   },
   "scripts": {
-    "clean": "rm -rf ./dist",
-    "dev": "tsc -p tsconfig.json",
+    "clean": "rm -rf dist",
     "build": "tsc -p tsconfig.json",
     "test": "jest --no-cache"
   },
