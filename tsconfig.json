@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "rootDir": "src",
+    "declaration": true,
+    "lib": ["esnext", "dom"],
+    "module": "es6",
+    "outDir": "dist",
+    "declarationDir": "dist",
+    "noEmitOnError": true,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "allowSyntheticDefaultImports": true,
+    "removeComments": true,
+    "target": "es5"
+  },
+  "exclude": [
+    "node_modules",
+    "__tests__",
+    "dist"
+  ]
+}
