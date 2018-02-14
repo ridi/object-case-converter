@@ -23,29 +23,31 @@ const functions: functions = {
   [CaseEnum.Pascal]: (string) => upperFirst(camelCase(string)),
 }
 
-export type options = {
-  style?: CaseEnum
+export type excludes = Array<string | RegExp | { [key: string]: CaseEnum }>
+
+type options = {
+  style: CaseEnum
   depth?: number
-  excludes?: Array<string | RegExp | { [key: string]: CaseEnum }>
+  excludes?: excludes
+  force?: boolean
 }
 
-const isDate = function (obj: any) {
-  return obj instanceof Date
-}
+const isRegExp = (obj: any) => obj instanceof RegExp
+const isCamelCase = (str: string) => str === camelCase(str)
 
-const isRegExp = function (obj: any) {
-  return obj instanceof RegExp
-}
+function core<T> (obj: any, options: options): T {
+  const {
+    style,
+    depth = 0,
+    force = false,
+  } = options
 
-export function camelize<T> (obj: any, options: options = {}): T {
-  const style = options.style || CaseEnum.Camel;
-  const depth = options.depth || 0
   const excludes = (options.excludes || []).reduce((result, item) => Object.assign(
     result,
     (typeof item === 'string' || item instanceof RegExp) ? { [<string>item]: '' } : item,
   ), <{ [key: string]: CaseEnum | '' }>{})
 
-  const excludeKeys = Object.keys(excludes);
+  const excludeKeys = Object.keys(excludes)
   const excludeRegexes: RegExp[] = excludeKeys
     .map(str => {
       const [
@@ -60,38 +62,58 @@ export function camelize<T> (obj: any, options: options = {}): T {
   const convertFn = functions[style]
 
   const convert = (key: string): string => {
+    if (!force && !isCamelCase(key)) return key
+
     if (excludeKeys.includes(key)) {
       const func = functions[camelCase(excludes[key]) as CaseEnum]
       return func ? func(key) : key
     }
+
     const matchedRegex = excludeRegexes.find(regex => regex.test(key))
     if (matchedRegex) {
       const func = functions[camelCase(excludes[matchedRegex.toString()]) as CaseEnum]
       return func ? func(key) : key
     }
+
     return convertFn(key)
   }
 
   const mapObject = <U extends Array<any> | Object>(obj: any, currentDepth: number = 1): U => {
-    if (depth && currentDepth > depth) {
-      return obj
-    } else if (!obj || (typeof obj !== 'object')) {
-      return obj
-    } else if (isDate(obj) || isRegExp(obj)) {
-      return obj
-    } else if (Array.isArray(obj)) {
+    if (depth && currentDepth > depth) return obj
+    if (!obj || (typeof obj !== 'object')) return obj
+
+    if (Array.isArray(obj)) {
       return <U>obj.map(o => mapObject(o, currentDepth))
     }
-    return Object.entries(obj).reduce((result, [key, value]) => Object.assign(result, {
-      [convert(key)]: mapObject(value, currentDepth + 1)
-    }), <U>{})
+
+    if (Object.prototype.toString.call(obj) === '[object Object]') {
+      return Object.entries(obj).reduce((result, [key, value]) => Object.assign(result, {
+        [convert(key)]: mapObject(value, currentDepth + 1)
+      }), <U>{})
+    }
+
+    return obj
   }
 
   return mapObject(obj)
 }
 
-export function decamelize<T> (obj: any, options: options = {}): T {
-  return camelize(obj, Object.assign({
-    style: CaseEnum.Snake
-  }, options))
+export type camelizeOpts = {
+  depth?: number
+  excludes?: excludes
+}
+
+export function camelize<T> (obj: any, options: camelizeOpts = {}): T {
+  return core(obj, Object.assign<camelizeOpts, options>(options, { style: CaseEnum.Camel, force: true }))
+}
+
+export type decamelizeOpts = {
+  style?: CaseEnum.Snake | CaseEnum.Kebab | CaseEnum.Pascal
+  depth?: number
+  excludes?: excludes
+  force?: boolean
+}
+
+export function decamelize<T> (obj: any, options: decamelizeOpts = {}): T {
+  return core(obj, Object.assign<options, decamelizeOpts>({ style: CaseEnum.Snake }, options))
 }
