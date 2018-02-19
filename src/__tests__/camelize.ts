@@ -34,6 +34,12 @@ const snakeCaseArray = [
 ]
 
 const snakeCaseArrayShallow = [
+  { id: '1', nickName: 'nick1', contacts: [{ contactType: 'phone', value: '000-000-000' }, { contactType: 'email', value: 'test@email.com' }] },
+  { id: '2', nickName: 'nick2', contacts: [] },
+  { id: '3', nickName: 'nick3', contacts: [{ contactType: 'address', value: 'xxx' }] },
+]
+
+const snakeCaseArrayShallowDepth2 = [
   { id: '1', nick_name: 'nick1', contacts: [{ contactType: 'phone', value: '000-000-000' }, { contactType: 'email', value: 'test@email.com' }] },
   { id: '2', nick_name: 'nick2', contacts: [] },
   { id: '3', nick_name: 'nick3', contacts: [{ contactType: 'address', value: 'xxx' }] },
@@ -46,6 +52,12 @@ const camelCaseArray = [
 ]
 
 const camelCaseArrayShallow = [
+  { id: '1', nick_name: 'nick1', contacts: [{ contact_type: 'phone', value: '000-000-000' }, { contact_type: 'email', value: 'test@email.com' }] },
+  { id: '2', nick_name: 'nick2', contacts: [] },
+  { id: '3', nick_name: 'nick3', contacts: [{ contact_type: 'address', value: 'xxx' }] },
+]
+
+const camelCaseArrayShallowDepth2 = [
   { id: '1', nickName: 'nick1', contacts: [{ contact_type: 'phone', value: '000-000-000' }, { contact_type: 'email', value: 'test@email.com' }] },
   { id: '2', nickName: 'nick2', contacts: [] },
   { id: '3', nickName: 'nick3', contacts: [{ contact_type: 'address', value: 'xxx' }] },
@@ -93,24 +105,12 @@ const camelCaseObjectShallowDepth2 = {
   newsLetter: { allEmail: false, marketingEmail: false },
 }
 
-describe('Default usages', () => {
-  it('camelize array', () => {
-    expect(camelize(snakeCaseArray, { recursive: true })).toEqual(camelCaseArray)
-  })
-  it('camelize object', () => {
-    expect(camelize(snakeCaseObject, { recursive: true })).toEqual(camelCaseObject)
-  })
-  it('decamelize array', () => {
-    expect(decamelize(camelCaseArray, { recursive: true })).toEqual(snakeCaseArray)
-  })
-  it('decamelize object', () => {
-    expect(decamelize(camelCaseObject, { recursive: true })).toEqual(snakeCaseObject)
-  })
-})
-
 describe('Shallow camelize', () => {
   it('camelize array', () => {
-    expect(camelize(snakeCaseArray, { recursive: 2 })).toEqual(camelCaseArrayShallow)
+    expect(camelize(snakeCaseArray)).toEqual(camelCaseArrayShallow)
+  })
+  it('camelize array with 2 depth', () => {
+    expect(camelize(snakeCaseArray, { recursive: 2 })).toEqual(camelCaseArrayShallowDepth2)
   })
   it('camelize object', () => {
     expect(camelize(snakeCaseObject)).toEqual(camelCaseObjectShallow)
@@ -122,13 +122,31 @@ describe('Shallow camelize', () => {
 
 describe('Shallow decamelize', () => {
   it('decamelize array', () => {
-    expect(decamelize(camelCaseArray, { recursive: 2 })).toEqual(snakeCaseArrayShallow)
+    expect(decamelize(camelCaseArray)).toEqual(snakeCaseArrayShallow)
+  })
+  it('decamelize array with 2 depth', () => {
+    expect(decamelize(camelCaseArray, { recursive: 2 })).toEqual(snakeCaseArrayShallowDepth2)
   })
   it('decamelize object', () => {
     expect(decamelize(camelCaseObject)).toEqual(snakeCaseObjectShallow)
   })
   it('decamelize object with 2 depth', () => {
     expect(decamelize(camelCaseObject, { recursive: 2 })).toEqual(snakeCaseObjectShallowDepth2)
+  })
+})
+
+describe('Recursive option', () => {
+  it('camelize array', () => {
+    expect(camelize(snakeCaseArray, { recursive: true })).toEqual(camelCaseArray)
+  })
+  it('camelize object', () => {
+    expect(camelize(snakeCaseObject, { recursive: true })).toEqual(camelCaseObject)
+  })
+  it('decamelize array', () => {
+    expect(decamelize(camelCaseArray, { recursive: true })).toEqual(snakeCaseArray)
+  })
+  it('decamelize object', () => {
+    expect(decamelize(camelCaseObject, { recursive: true })).toEqual(snakeCaseObject)
   })
 })
 
