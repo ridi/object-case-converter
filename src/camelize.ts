@@ -55,12 +55,15 @@ function core<T> (obj: any, options: options): T {
 
   const convert = ((): (key: string) => string => {
     const convertFn = converters[style || CaseEnum.Camel]
+
     if (Array.isArray(excludes)) {
       return key => {
         if (!force && !isCamelCase(key)) return key
         return excludes.includes(key) ? key : convertFn(key)
       }
-    } else if (typeof excludes === 'function') {
+    }
+
+    if (typeof excludes === 'function') {
       return key => {
         if (!force && !isCamelCase(key)) return key
         const result = excludes(key)
@@ -71,12 +74,15 @@ function core<T> (obj: any, options: options): T {
         }
         return convertFn(key)
       }
-    } else if (isRegExp(excludes)) {
+    }
+
+    if (isRegExp(excludes)) {
       return key => {
         if (!force && !isCamelCase(key)) return key
         return excludes.test(key) ? key : convertFn(key)
       }
     }
+
     return key => key
   })()
 
