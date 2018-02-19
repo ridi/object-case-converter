@@ -2,6 +2,7 @@ import {
   camelCase,
   snakeCase,
   kebabCase,
+  upperCase,
   upperFirst,
 } from 'lodash-es'
 
@@ -10,80 +11,81 @@ export enum CaseEnum {
   Snake = 'snakeCase',
   Kebab = 'kebabCase',
   Pascal = 'pascalCase',
+  Constant = 'constantCase',
 }
 
-type functions = {
-  [style in CaseEnum]: (string?: string) => string
+export const CaseRegex = {
+  Camel: /^[a-z][a-zA-Z]+$/,
+  Snake: /^[a-z_]+$/,
+  Kebab: /^[a-z-]+$/,
+  Pascal: /^[A-Z][a-zA-Z]+$/,
+  Constant: /^[A-Z_]+$/,
 }
 
-const functions: functions = {
+export const converters = {
   [CaseEnum.Camel]: camelCase,
   [CaseEnum.Snake]: snakeCase,
   [CaseEnum.Kebab]: kebabCase,
-  [CaseEnum.Pascal]: (string) => upperFirst(camelCase(string)),
+  [CaseEnum.Pascal]: (string?: string): string => upperFirst(camelCase(string)),
+  [CaseEnum.Constant]: (string?: string): string => upperCase(snakeCase(string)),
 }
 
-export type excludes = Array<string | RegExp | { [key: string]: CaseEnum }>
+export type excludes = string[] | RegExp | ((key: string) => string | boolean)
+export type recursive = boolean | number
 
 type options = {
   style: CaseEnum
-  depth?: number
+  recursive?: recursive
   excludes?: excludes
   force?: boolean
 }
 
-const isRegExp = (obj: any) => obj instanceof RegExp
+const isRegExp = (obj: any): obj is RegExp => obj instanceof RegExp
 const isCamelCase = (str: string) => str === camelCase(str)
 
 function core<T> (obj: any, options: options): T {
   const {
     style,
-    depth = 0,
+    recursive = false,
+    excludes = [],
     force = false,
   } = options
 
-  const excludes = (options.excludes || []).reduce((result, item) => Object.assign(
-    result,
-    (typeof item === 'string' || item instanceof RegExp) ? { [<string>item]: '' } : item,
-  ), <{ [key: string]: CaseEnum | '' }>{})
+  const depth: number = typeof recursive === 'boolean' ? Number(!recursive) : recursive > 0 ? recursive : 0
 
-  const excludeKeys = Object.keys(excludes)
-  const excludeRegexes: RegExp[] = excludeKeys
-    .map(str => {
-      const [
-        ,
-        pattern = undefined,
-        flags = undefined,
-      ] = /\/(.+)\/([gimuy]*)/.exec(str) || []
-      return pattern ? new RegExp(pattern, flags) : str
-    })
-    .filter((key): key is RegExp => isRegExp(key))
-
-  const convertFn = functions[style]
-
-  const convert = (key: string): string => {
-    if (!force && !isCamelCase(key)) return key
-
-    if (excludeKeys.includes(key)) {
-      const func = functions[camelCase(excludes[key]) as CaseEnum]
-      return func ? func(key) : key
+  const convert = ((): (key: string) => string => {
+    const convertFn = converters[style || CaseEnum.Camel]
+    if (Array.isArray(excludes)) {
+      return key => {
+        if (!force && !isCamelCase(key)) return key
+        return excludes.includes(key) ? key : convertFn(key)
+      }
+    } else if (typeof excludes === 'function') {
+      return key => {
+        if (!force && !isCamelCase(key)) return key
+        const result = excludes(key)
+        if (typeof result === 'string') {
+          return result
+        } else if (result === false) {
+          return key
+        }
+        return convertFn(key)
+      }
+    } else if (isRegExp(excludes)) {
+      return key => {
+        if (!force && !isCamelCase(key)) return key
+        return excludes.test(key) ? key : convertFn(key)
+      }
     }
-
-    const matchedRegex = excludeRegexes.find(regex => regex.test(key))
-    if (matchedRegex) {
-      const func = functions[camelCase(excludes[matchedRegex.toString()]) as CaseEnum]
-      return func ? func(key) : key
-    }
-
-    return convertFn(key)
-  }
+    return key => key
+  })()
 
   const mapObject = <U extends Array<any> | Object>(obj: any, currentDepth: number = 1): U => {
     if (depth && currentDepth > depth) return obj
     if (!obj || (typeof obj !== 'object')) return obj
 
     if (Array.isArray(obj)) {
-      return <U>obj.map(o => mapObject(o, currentDepth))
+      return <U>obj.map(o => mapObject(o, currentDepth + 1))
     }
 
     if (Object.prototype.toString.call(obj) === '[object Object]') {
@@ -99,7 +101,7 @@ function core<T> (obj: any, options: options): T {
 }
 
 export type camelizeOpts = {
-  depth?: number
+  recursive?: recursive
   excludes?: excludes
 }
 
@@ -108,8 +110,7 @@ export function camelize<T> (obj: any, options: camelizeOpts = {}): T {
 }
 
 export type decamelizeOpts = {
-  style?: CaseEnum.Snake | CaseEnum.Kebab | CaseEnum.Pascal
-  depth?: number
+  recursive?: recursive
   excludes?: excludes
   force?: boolean
 }
