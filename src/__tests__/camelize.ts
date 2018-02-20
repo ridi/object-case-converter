@@ -34,12 +34,6 @@ const snakeCaseArray = [
 ]
 
 const snakeCaseArrayShallow = [
-  { id: '1', nickName: 'nick1', contacts: [{ contactType: 'phone', value: '000-000-000' }, { contactType: 'email', value: 'test@email.com' }] },
-  { id: '2', nickName: 'nick2', contacts: [] },
-  { id: '3', nickName: 'nick3', contacts: [{ contactType: 'address', value: 'xxx' }] },
-]
-
-const snakeCaseArrayShallowDepth2 = [
   { id: '1', nick_name: 'nick1', contacts: [{ contactType: 'phone', value: '000-000-000' }, { contactType: 'email', value: 'test@email.com' }] },
   { id: '2', nick_name: 'nick2', contacts: [] },
   { id: '3', nick_name: 'nick3', contacts: [{ contactType: 'address', value: 'xxx' }] },
@@ -52,12 +46,6 @@ const camelCaseArray = [
 ]
 
 const camelCaseArrayShallow = [
-  { id: '1', nick_name: 'nick1', contacts: [{ contact_type: 'phone', value: '000-000-000' }, { contact_type: 'email', value: 'test@email.com' }] },
-  { id: '2', nick_name: 'nick2', contacts: [] },
-  { id: '3', nick_name: 'nick3', contacts: [{ contact_type: 'address', value: 'xxx' }] },
-]
-
-const camelCaseArrayShallowDepth2 = [
   { id: '1', nickName: 'nick1', contacts: [{ contact_type: 'phone', value: '000-000-000' }, { contact_type: 'email', value: 'test@email.com' }] },
   { id: '2', nickName: 'nick2', contacts: [] },
   { id: '3', nickName: 'nick3', contacts: [{ contact_type: 'address', value: 'xxx' }] },
@@ -68,70 +56,41 @@ const snakeCaseObject = {
   nick_name: 'nick1',
   contacts: [{ contact_type: 'phone', value: '000-000-000' }, { contact_type: 'email', value: 'test@email.com' }],
   news_letter: { all_email: false, marketing_email: false },
-}
+};
 
 const snakeCaseObjectShallow = {
   id: '1',
   nick_name: 'nick1',
   contacts: [{ contactType: 'phone', value: '000-000-000' }, { contactType: 'email', value: 'test@email.com' }],
   news_letter:{ allEmail: false, marketingEmail: false },
-}
-
-const snakeCaseObjectShallowDepth2 = {
-  id: '1',
-  nick_name: 'nick1',
-  contacts: [{ contactType: 'phone', value: '000-000-000' }, { contactType: 'email', value: 'test@email.com' }],
-  news_letter:{ all_email: false, marketing_email: false },
-}
+};
 
 const camelCaseObject = {
   id: '1',
   nickName: 'nick1',
   contacts: [{ contactType: 'phone', value: '000-000-000' }, { contactType: 'email', value: 'test@email.com' }],
   newsLetter: { allEmail: false, marketingEmail: false },
-}
+};
 
 const camelCaseObjectShallow = {
   id: '1',
   nickName: 'nick1',
   contacts: [{ contact_type: 'phone', value: '000-000-000' }, { contact_type: 'email', value: 'test@email.com' }],
   newsLetter: { all_email: false, marketing_email: false },
-}
+};
 
-const camelCaseObjectShallowDepth2 = {
-  id: '1',
-  nickName: 'nick1',
-  contacts: [{ contact_type: 'phone', value: '000-000-000' }, { contact_type: 'email', value: 'test@email.com' }],
-  newsLetter: { allEmail: false, marketingEmail: false },
-}
-
-describe('Shallow camelize', () => {
+describe('Shallow (default)', () => {
   it('camelize array', () => {
     expect(camelize(snakeCaseArray)).toEqual(camelCaseArrayShallow)
-  })
-  it('camelize array with 2 depth', () => {
-    expect(camelize(snakeCaseArray, { recursive: 2 })).toEqual(camelCaseArrayShallowDepth2)
   })
   it('camelize object', () => {
     expect(camelize(snakeCaseObject)).toEqual(camelCaseObjectShallow)
   })
-  it('camelize object with 2 depth', () => {
-    expect(camelize(snakeCaseObject, { recursive: 2 })).toEqual(camelCaseObjectShallowDepth2)
-  })
-})
-
-describe('Shallow decamelize', () => {
   it('decamelize array', () => {
     expect(decamelize(camelCaseArray)).toEqual(snakeCaseArrayShallow)
   })
-  it('decamelize array with 2 depth', () => {
-    expect(decamelize(camelCaseArray, { recursive: 2 })).toEqual(snakeCaseArrayShallowDepth2)
-  })
   it('decamelize object', () => {
     expect(decamelize(camelCaseObject)).toEqual(snakeCaseObjectShallow)
-  })
-  it('decamelize object with 2 depth', () => {
-    expect(decamelize(camelCaseObject, { recursive: 2 })).toEqual(snakeCaseObjectShallowDepth2)
   })
 })
 
@@ -151,40 +110,98 @@ describe('Recursive option', () => {
 })
 
 
+const result = {
+  FOO: {
+    foo_bar: '',
+  },
+  foo_baz: [
+    { baz_foo: '' },
+    { baz_foo: '' },
+  ],
+  bar_baz: false,
+  baz_foo: {
+    FOO: '',
+  },
+}
+
+describe('Specific recursive', () => {
+  it('recursive: true with exclude', () => {
+    expect(camelize(result, { excludes: ['FOO'], recursive: true })).toEqual({ FOO: { foo_bar: '' }, fooBaz: [{ bazFoo: '' }, { bazFoo: '' }], barBaz: false, bazFoo: { FOO: '' } })
+  })
+  it('positive recursive', () => {
+    expect(camelize(result, { recursive: ['foo_baz'] })).toEqual({ foo: { foo_bar: '' }, fooBaz: [{ bazFoo: '' }, { bazFoo: '' }], barBaz: false, bazFoo: { FOO: '' } })
+  })
+  it('exclude but in positive recursive', () => {
+    expect(camelize(result, { excludes: ['FOO'], recursive: ['FOO', 'foo_baz', 'baz_foo'] })).toEqual({ FOO: { fooBar: '' }, fooBaz: [{ bazFoo: '' }, { bazFoo: '' }], barBaz: false, bazFoo: { FOO: '' } })
+  })
+  it('negative recursive', () => {
+    expect(camelize(result, { recursive: { excludes: ['FOO'] } })).toEqual({ foo: { foo_bar: '' }, fooBaz: [{ bazFoo: '' }, { bazFoo: '' }], barBaz: false, bazFoo: { foo: '' } })
+  })
+  it('excludes with negative recursive', () => {
+    expect(camelize(result, { excludes: ['bar_baz'], recursive: { excludes: ['FOO'] } })).toEqual({ foo: { foo_bar: '' }, fooBaz: [{ bazFoo: '' }, { bazFoo: '' }], bar_baz: false, bazFoo: { foo: '' } })
+  })
+})
+
+describe('Inherit excludes', () => {
+  it('recursive: true & excludes: string[]', () => {
+    expect(camelize(result, { excludes: ['FOO'], recursive: true }))
+      .toEqual(camelize(result, { excludes: ['FOO'], recursive: { excludes: ['FOO'] } }))
+  })
+  it('recursive: { excludes: string[] } & excludes: string[]', () => {
+    expect(camelize(result, { excludes: ['FOO'], recursive: { excludes: ['foo_baz'] } }))
+      .toEqual(camelize(result, { excludes: ['FOO'], recursive: { excludes: ['foo_baz', 'FOO'] } }))
+  })
+})
+
+
 const allCase = {
-  camelCase: 'camelCase',
-  snake_case: 'snake_case',
-  'kebab-case': 'kebab-case',
-  PascalCase: 'PascalCase',
-  CONSTANT_CASE: 'CONSTANT_CASE',
-  'String? \"\'\t case': '',
+  camelFooBar: '',
+  snake_foo_bar: '',
+  'kebab-foo-bar': '',
+  PascalFooBar: '',
+  CONSTANT_FOO_BAR: '',
+  'String? \"\'\t foo bar': '',
 }
 
 describe('All cases', () => {
   it('camelize', () => {
-    expect(camelize(allCase)).toEqual({camelCase: 'camelCase', snakeCase: 'snake_case', kebabCase: 'kebab-case', pascalCase: 'PascalCase', constantCase: 'CONSTANT_CASE', stringCase: '' })
+    expect(camelize(allCase)).toEqual({ camelFooBar: '', snakeFooBar: '', kebabFooBar: '', pascalFooBar: '', constantFooBar: '', stringFooBar: '' })
   })
   it('decamelize', () => {
-    expect(decamelize(allCase)).toEqual({ camel_case: 'camelCase', snake_case: 'snake_case', 'kebab-case': 'kebab-case', PascalCase: 'PascalCase', CONSTANT_CASE: 'CONSTANT_CASE', 'String? \"\'\t case': '' })
+    expect(decamelize(allCase)).toEqual({ camel_foo_bar: '', snake_foo_bar: '', 'kebab-foo-bar': '', PascalFooBar: '', CONSTANT_FOO_BAR: '', 'String? \"\'\t foo bar': '' })
   })
   it('force decamelize', () => {
-    expect(decamelize(allCase, { force: true })).toEqual({ camel_case: 'camelCase', snake_case: 'snake_case', kebab_case: 'kebab-case', pascal_case: 'PascalCase', constant_case: 'CONSTANT_CASE', string_case: '' })
+    expect(decamelize(allCase, { force: true })).toEqual({ camel_foo_bar: '', snake_foo_bar: '', kebab_foo_bar: '', pascal_foo_bar: '', constant_foo_bar: '', string_foo_bar: '' })
   })
 })
 
-describe('Excludes option', () => {
-  it('string[]', () => {
-    expect(camelize(allCase, { excludes: ['CONSTANT_CASE', 'snake_case'] })).toEqual({camelCase: 'camelCase', snake_case: 'snake_case', kebabCase: 'kebab-case', pascalCase: 'PascalCase', 'CONSTANT_CASE': 'CONSTANT_CASE', stringCase: '' })
+describe('Excludes/Exception', () => {
+  it('excludes string[]', () => {
+    expect(camelize(allCase, { excludes: ['CONSTANT_FOO_BAR', 'snake_foo_bar'] })).toEqual({camelFooBar: '', snake_foo_bar: '', kebabFooBar: '', pascalFooBar: '', 'CONSTANT_FOO_BAR': '', stringFooBar: '' })
   })
-  it('RegExp', () => {
-    expect(camelize(allCase, { excludes: CaseRegex.Constant })).toEqual({camelCase: 'camelCase', snakeCase: 'snake_case', kebabCase: 'kebab-case', pascalCase: 'PascalCase', 'CONSTANT_CASE': 'CONSTANT_CASE', stringCase: '' })
+  it('excludes RegExp', () => {
+    expect(camelize(allCase, { excludes: CaseRegex.Constant })).toEqual({camelFooBar: '', snakeFooBar: '', kebabFooBar: '', pascalFooBar: '', 'CONSTANT_FOO_BAR': '', stringFooBar: '' })
   })
-  it('function', () => {
+  it('excludes function', () => {
     expect(camelize(allCase, { excludes: key => {
-      if (CaseRegex.Constant.test(key)) {
-        return converters[CaseEnum.Kebab](key)
+      if (key === 'CONSTANT_FOO_BAR') {
+        return true
+      } else if (key.includes('ke')) {
+        return true
       }
-      return true
-    } })).toEqual({camelCase: 'camelCase', snakeCase: 'snake_case', kebabCase: 'kebab-case', pascalCase: 'PascalCase', 'constant-case': 'CONSTANT_CASE', stringCase: '' })
+      return false
+    } })).toEqual({camelFooBar: '', snake_foo_bar: '', 'kebab-foo-bar': '', pascalFooBar: '', 'CONSTANT_FOO_BAR': '', stringFooBar: '' })
+  })
+  it('exception', () => {
+    expect(decamelize(allCase, { force: true, exception: {
+      PascalFooBar: converters[CaseEnum.Kebab],
+      'String? \"\'\t foo bar': 'string!',
+    } })).toEqual({ camel_foo_bar: '', snake_foo_bar: '', kebab_foo_bar: '', 'pascal-foo-bar': '', constant_foo_bar: '', 'string!': '' })
+  })
+  it('exception (not force)', () => {
+    expect(decamelize(allCase, { exception: {
+      PascalFooBar: converters[CaseEnum.Kebab],
+      'String? \"\'\t foo bar': 'string!',
+    } })).toEqual({ camel_foo_bar: '', snake_foo_bar: '', 'kebab-foo-bar': '', 'pascal-foo-bar': '', 'CONSTANT_FOO_BAR': '', 'string!': '' })
   })
 })

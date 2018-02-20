@@ -22,21 +22,24 @@ export const CaseRegex = {
   Constant: /^[A-Z_]+$/,
 }
 
-export const converters = {
+export type converters = { [style in CaseEnum]: (string?: string) => string }
+export const converters: converters = {
   [CaseEnum.Camel]: camelCase,
   [CaseEnum.Snake]: snakeCase,
   [CaseEnum.Kebab]: kebabCase,
-  [CaseEnum.Pascal]: (string?: string): string => upperFirst(camelCase(string)),
-  [CaseEnum.Constant]: (string?: string): string => upperCase(snakeCase(string)),
+  [CaseEnum.Pascal]: string => upperFirst(camelCase(string)),
+  [CaseEnum.Constant]: string => upperCase(snakeCase(string)),
 }
 
-export type excludes = string[] | RegExp | ((key: string) => string | boolean)
-export type recursive = boolean | number
+export type recursive = true | string[]| { excludes: string[] }
+export type excludes = string[] | RegExp | ((key: string) => boolean)
+export type exception = { [key: string]: string | ((key?: string) => string) }
 
 type options = {
   style: CaseEnum
   recursive?: recursive
   excludes?: excludes
+  exception?: exception
   force?: boolean
 }
 
@@ -47,56 +50,67 @@ function core<T> (obj: any, options: options): T {
   const {
     style,
     recursive = false,
-    excludes = [],
+    excludes,
+    exception,
     force = false,
   } = options
 
-  const depth: number = typeof recursive === 'boolean' ? Number(!recursive) : recursive > 0 ? recursive : 0
+  const isExclude = ((): (key: string) => boolean => {
+    if (Array.isArray(excludes)) {
+      return key => excludes.includes(key)
+    }
+    if (typeof excludes === 'function') {
+      return key => excludes(key)
+    }
+    if (isRegExp(excludes)) {
+      return key => excludes.test(key)
+    }
+    return () => false
+  })()
 
   const convert = ((): (key: string) => string => {
     const convertFn = converters[style || CaseEnum.Camel]
 
-    if (Array.isArray(excludes)) {
-      return key => {
-        if (!force && !isCamelCase(key)) return key
-        return excludes.includes(key) ? key : convertFn(key)
-      }
+    if (excludes) {
+      return key => isExclude(key) ? key: convertFn(key)
     }
 
-    if (typeof excludes === 'function') {
+    if (exception) {
       return key => {
-        if (!force && !isCamelCase(key)) return key
-        const result = excludes(key)
-        if (typeof result === 'string') {
-          return result
-        } else if (result === false) {
-          return key
+        const value = exception[key]
+        if (value) {
+          return typeof value === 'function' ? value(key) : value
         }
-        return convertFn(key)
+        return force || isCamelCase(key) ? convertFn(key) : key
       }
     }
 
-    if (isRegExp(excludes)) {
-      return key => {
-        if (!force && !isCamelCase(key)) return key
-        return excludes.test(key) ? key : convertFn(key)
-      }
-    }
-
-    return key => key
+    return key => force || isCamelCase(key) ? convertFn(key) : key
   })()
 
-  const mapObject = <U extends Array<any> | Object>(obj: any, currentDepth: number = 1): U => {
-    if (depth && currentDepth > depth) return obj
+  const isRecursive = ((): (key?: string) => boolean => {
+    if (Array.isArray(recursive)) {
+      return key => recursive.includes(key)
+    }
+    if (typeof recursive === 'object' && Array.isArray(recursive.excludes)) {
+      return key => !isExclude(key) && !recursive.excludes.includes(key)
+    }
+    if (recursive === true) {
+      return key => !isExclude(key)
+    }
+    return () => false
+  })()
+
+  const mapObject = <U extends Array<any> | Object>(obj: any): U => {
     if (!obj || (typeof obj !== 'object')) return obj
 
     if (Array.isArray(obj)) {
-      return <U>obj.map(o => mapObject(o, currentDepth + 1))
+      return <U>obj.map(o => mapObject(o))
     }
 
     if (Object.prototype.toString.call(obj) === '[object Object]') {
       return Object.entries(obj).reduce((result, [key, value]) => Object.assign(result, {
-        [convert(key)]: mapObject(value, currentDepth + 1)
+        [convert(key)]: isRecursive(key) ? mapObject(value) : value
       }), <U>{})
     }
 
@@ -117,7 +131,7 @@ export function camelize<T> (obj: any, options: camelizeOpts = {}): T {
 
 export type decamelizeOpts = {
   recursive?: recursive
-  excludes?: excludes
+  exception?: exception
   force?: boolean
 }
 
