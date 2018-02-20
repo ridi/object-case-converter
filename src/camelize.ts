@@ -1,35 +1,14 @@
 import {
   camelCase,
   snakeCase,
-  kebabCase,
-  upperCase,
-  upperFirst,
 } from 'lodash-es'
 
-export enum CaseEnum {
+enum CaseEnum {
   Camel = 'camelCase',
   Snake = 'snakeCase',
-  Kebab = 'kebabCase',
-  Pascal = 'pascalCase',
-  Constant = 'constantCase',
 }
 
-export const CaseRegex = {
-  Camel: /^[a-z][a-zA-Z]+$/,
-  Snake: /^[a-z_]+$/,
-  Kebab: /^[a-z-]+$/,
-  Pascal: /^[A-Z][a-zA-Z]+$/,
-  Constant: /^[A-Z_]+$/,
-}
-
-export type converters = { [style in CaseEnum]: (string?: string) => string }
-export const converters: converters = {
-  [CaseEnum.Camel]: camelCase,
-  [CaseEnum.Snake]: snakeCase,
-  [CaseEnum.Kebab]: kebabCase,
-  [CaseEnum.Pascal]: string => upperFirst(camelCase(string)),
-  [CaseEnum.Constant]: string => upperCase(snakeCase(string)),
-}
+const converters = { camelCase, snakeCase }
 
 export type recursive = true | string[]| { excludes: string[] }
 export type excludes = string[] | RegExp | ((key: string) => boolean)

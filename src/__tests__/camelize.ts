@@ -1,4 +1,11 @@
-import { camelize, decamelize, CaseEnum, CaseRegex, converters } from '../camelize'
+import {
+  camelCase,
+  snakeCase,
+  kebabCase,
+  upperFirst,
+} from 'lodash-es'
+
+import { camelize, decamelize } from '../camelize'
 
 describe('Basic types', () => {
   it('null', () => {
@@ -180,7 +187,7 @@ describe('Excludes/Exception', () => {
     expect(camelize(allCase, { excludes: ['CONSTANT_FOO_BAR', 'snake_foo_bar'] })).toEqual({camelFooBar: '', snake_foo_bar: '', kebabFooBar: '', pascalFooBar: '', 'CONSTANT_FOO_BAR': '', stringFooBar: '' })
   })
   it('excludes RegExp', () => {
-    expect(camelize(allCase, { excludes: CaseRegex.Constant })).toEqual({camelFooBar: '', snakeFooBar: '', kebabFooBar: '', pascalFooBar: '', 'CONSTANT_FOO_BAR': '', stringFooBar: '' })
+    expect(camelize(allCase, { excludes: /^[A-Z_]+$/ })).toEqual({camelFooBar: '', snakeFooBar: '', kebabFooBar: '', pascalFooBar: '', 'CONSTANT_FOO_BAR': '', stringFooBar: '' })
   })
   it('excludes function', () => {
     expect(camelize(allCase, { excludes: key => {
@@ -194,14 +201,14 @@ describe('Excludes/Exception', () => {
   })
   it('exception', () => {
     expect(decamelize(allCase, { force: true, exception: {
-      PascalFooBar: converters[CaseEnum.Kebab],
+      PascalFooBar: kebabCase,
       'String? \"\'\t foo bar': 'string!',
     } })).toEqual({ camel_foo_bar: '', snake_foo_bar: '', kebab_foo_bar: '', 'pascal-foo-bar': '', constant_foo_bar: '', 'string!': '' })
   })
   it('exception (not force)', () => {
     expect(decamelize(allCase, { exception: {
-      PascalFooBar: converters[CaseEnum.Kebab],
-      'String? \"\'\t foo bar': 'string!',
-    } })).toEqual({ camel_foo_bar: '', snake_foo_bar: '', 'kebab-foo-bar': '', 'pascal-foo-bar': '', 'CONSTANT_FOO_BAR': '', 'string!': '' })
+      PascalFooBar: key => snakeCase(key).toUpperCase(),
+      'String? \"\'\t foo bar': key => upperFirst(camelCase(key)),
+    } })).toEqual({ camel_foo_bar: '', snake_foo_bar: '', 'kebab-foo-bar': '', 'PASCAL_FOO_BAR': '', 'CONSTANT_FOO_BAR': '', StringFooBar: '' })
   })
 })
