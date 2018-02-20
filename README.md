@@ -9,14 +9,14 @@ Convert keys in an javascript Object or Array to the specific forms(camelCase, s
 ## Installation
 
 ```
-$ npm install --save object-case-converter
+$ npm install --save @ridi/object-case-converter
 ```
 
 ## Usage
 
 ### ES6
 ```javascript
-import { camelCase, snakeCase } from 'object-case-converter';
+import { camelCase, snakeCase } from '@ridi/object-case-converter';
 
 const result1 = camelCase(null);
 // result1 = null
@@ -48,7 +48,7 @@ const result3 = snakeCase([
 
 ### ES5
 ```javascript
-var converter = require('object-case-converter');
+var converter = require('@ridi/object-case-converter');
 
 converter.camelCase(...);
 converter.snakeCase(...);
