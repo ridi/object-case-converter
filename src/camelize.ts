@@ -8,7 +8,10 @@ enum CaseEnum {
   Snake = 'snakeCase',
 }
 
-const converters = { camelCase, snakeCase }
+const converters: { [style in CaseEnum]: (string?: string) => string } = {
+  camelCase,
+  snakeCase,
+}
 
 export type recursive = true | string[]| { excludes: string[] }
 export type excludes = string[] | RegExp | ((key: string) => boolean)
@@ -48,10 +51,10 @@ function core<T> (obj: any, options: options): T {
   })()
 
   const convert = ((): (key: string) => string => {
-    const convertFn = converters[style || CaseEnum.Camel]
+    const convertFn = converters[style]
 
     if (excludes) {
-      return key => isExclude(key) ? key: convertFn(key)
+      return key => isExclude(key) ? key : convertFn(key)
     }
 
     if (exception) {
@@ -105,13 +108,13 @@ export type camelizeOpts = {
 }
 
 export function camelize<T> (obj: any, options: camelizeOpts = {}): T {
-  return core(obj, Object.assign<camelizeOpts, options>(options, { style: CaseEnum.Camel, force: true }))
+  return core(obj, Object.assign<options, camelizeOpts>({ style: CaseEnum.Camel, force: true }, options))
 }
 
 export type decamelizeOpts = {
   recursive?: recursive
   exception?: exception
-  force?: boolean
+  force?: true
 }
 
 export function decamelize<T> (obj: any, options: decamelizeOpts = {}): T {
