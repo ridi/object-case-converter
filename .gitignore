@@ -1,5 +1,5 @@
-/coverage/
-/node_modules/
-/.idea/
-/dist/
-npm-debug.log
+*.log
+.idea/
+coverage/
+node_modules
+dist
