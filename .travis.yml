@@ -1,10 +1,9 @@
 language: node_js
 node_js: '6'
 cache: yarn
-before_deploy: yarn run build
+before_deploy: yarn build
 script:
   - yarn test
-  - yarn run lint
 deploy:
   provider: npm
   email: developer@ridi.com
