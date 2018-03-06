@@ -1,0 +1,12 @@
+language: node_js
+node_js: '6'
+cache: yarn
+before_deploy: yarn build
+script:
+  - yarn test
+deploy:
+  provider: npm
+  email: developer@ridi.com
+  api_key: $NPM_TOKEN
+  on:
+    tags: true
