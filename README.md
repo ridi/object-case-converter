@@ -4,7 +4,7 @@
 [![Build Status](https://travis-ci.org/ridi/object-case-converter.svg?branch=master)](https://travis-ci.org/ridi/object-case-converter)
 [![Greenkeeper badge](https://badges.greenkeeper.io/ridi/object-case-converter.svg)](https://greenkeeper.io/)
 
-Convert keys in an javascript Object or Array to the specific forms(camelize, snake_case, etc.)
+Convert keys in an javascript Object or Array to the specific forms(camelCase, snake_case, etc.)
 
 ## Installation
 
