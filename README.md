@@ -58,7 +58,7 @@ converter.decamelize(...);
 ### Methods
 #### camelize(collection, options = {})
 
-Convert keys in an object or objects in an array to `camelize`
+Convert keys in an object or objects in an array to `camelCase`
 
 * collection (Array|Object) - object or array to be converted
 * [options] (Object)
