@@ -4,7 +4,7 @@
 [![Build Status](https://travis-ci.org/ridi/object-case-converter.svg?branch=master)](https://travis-ci.org/ridi/object-case-converter)
 [![Greenkeeper badge](https://badges.greenkeeper.io/ridi/object-case-converter.svg)](https://greenkeeper.io/)
 
-Convert keys in an javascript Object or Array to the specific forms(camelCase, snake_case, etc.)
+Convert keys in an javascript Object to the specific style(camelCase, snake_case, etc.)
 
 ## Installation
 
@@ -58,23 +58,23 @@ converter.decamelize(...);
 ### Methods
 #### camelize(collection, options = {})
 
-Convert keys in an object or objects in an array to `camelCase`
+Convert keys in an object or collection to `camelCase`
 
 * collection (Array|Object) - object or array to be converted
 * [options] (Object)
 
-        options = {
+        {
             recursive?: true | string[]| { excludes: string[] }
             excludes?: string[] | RegExp | ((key: string) => boolean)
         }
-    
-    * recursive - convert only matched key as recursive
-    * excludes - escape when key includes in string[] or when function or RegExp.test() are return true
+
+    * recursive - convert as recursively
+    * excludes - excludes from convertion
 
 
 #### decamelize(collection, options = { force: false })
 
-Convert keys in an object or objects in an array **that are camelCase** to `snake_case`
+Convert keys **that are camelCase only** in an object or collection to `snake_case`
 
 * collection (Array|Object) - object or array to be converted
 * [options] (Object)
@@ -84,10 +84,39 @@ Convert keys in an object or objects in an array **that are camelCase** to `snak
             exception?: { [key: string]: string | ((key?: string) => string) }
             force?: true
         }
-    
-    * recursive - convert only matched key as recursive
-    * exception - when key has been owned by exception object, convert to value specified string or function return
-    * force - always convert to snake_case without check if key is camelCase
+
+    * recursive - convert as recursively
+    * exception - convert to specified value
+    * force - convert all keys to snake_case
+
+### Options
+
+* `recursive`: false
+
+  * true -- always convert recursively
+  * string[] -- recursively only if key is includes in array
+  * { excludes: string[] } -- convert when key is not in `recursive.excludes` array
+
+  If set true or { excludes: string[] } with `excludes` option, recursive inherit excludes option.
+
+* `excludes`: `undefined`
+
+  * string[] -- excludes from convertion if key is in the array
+  * RegExp -- excludes matched keys
+  * (key: string) => boolean -- excludes when function are return true
+
+* `exception`: `{}`
+
+      {
+        [key: string]: string | ((key?: string) => string)
+      }
+
+  * string -- key is converted to specific string
+  * (key?: string) => string -- converted to return value
+
+* `force`: false
+
+  If true, convert without checking that the key is camelCase
 
 ## Development
 
@@ -99,7 +128,7 @@ $ npm install
 
 ### Build
 
-Webpack build using Babel (Not required in development.)
+Transpile TypeScript
 
 ```
 $ npm run build
