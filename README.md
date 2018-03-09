@@ -69,7 +69,7 @@ Convert keys in an object or collection to `camelCase`
         }
 
     * recursive - convert as recursively
-    * excludes - excludes from convertion
+    * excludes - excludes from conversion
 
 
 #### decamelize(collection, options = { force: false })
@@ -101,7 +101,7 @@ Convert keys **that are camelCase only** in an object or collection to `snake_ca
 
 * `excludes`: `undefined`
 
-  * string[] -- excludes from convertion if key is in the array
+  * string[] -- excludes from conversion if key is in the array
   * RegExp -- excludes matched keys
   * (key: string) => boolean -- excludes when function are return true
 
