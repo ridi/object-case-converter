@@ -23,7 +23,6 @@
   },
   "homepage": "https://github.com/ridi/object-case-converter#readme",
   "devDependencies": {
-    "@ridi/tslint-config": "^0.1.0",
     "@types/jest": "^22.0.1",
     "jest": "^20.0.4",
     "ts-jest": "^22.0.1",
