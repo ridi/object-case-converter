@@ -135,12 +135,6 @@ describe('Specific recursive', () => {
   it('recursive: true with exclude', () => {
     expect(camelize(result, { excludes: ['FOO'], recursive: true })).toEqual({ FOO: { foo_bar: '' }, fooBaz: [{ bazFoo: '' }, { bazFoo: '' }], barBaz: false, bazFoo: { FOO: '' } })
   })
-  it('positive recursive', () => {
-    expect(camelize(result, { recursive: ['foo_baz'] })).toEqual({ foo: { foo_bar: '' }, fooBaz: [{ bazFoo: '' }, { bazFoo: '' }], barBaz: false, bazFoo: { FOO: '' } })
-  })
-  it('exclude but in positive recursive', () => {
-    expect(camelize(result, { excludes: ['FOO'], recursive: ['FOO', 'foo_baz', 'baz_foo'] })).toEqual({ FOO: { fooBar: '' }, fooBaz: [{ bazFoo: '' }, { bazFoo: '' }], barBaz: false, bazFoo: { FOO: '' } })
-  })
   it('negative recursive', () => {
     expect(camelize(result, { recursive: { excludes: ['FOO'] } })).toEqual({ foo: { foo_bar: '' }, fooBaz: [{ bazFoo: '' }, { bazFoo: '' }], barBaz: false, bazFoo: { foo: '' } })
   })

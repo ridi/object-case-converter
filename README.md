@@ -94,10 +94,9 @@ Convert keys **that are camelCase only** in an object or collection to `snake_ca
 * `recursive`: false
 
   * true -- always convert recursively
-  * string[] -- recursively only if key is includes in array
   * { excludes: string[] } -- convert when key is not in `recursive.excludes` array
 
-  If set true or { excludes: string[] } with `excludes` option, recursive inherit excludes option.
+  When used with the `excludes` option, excludes keys are also excluded from recursive conversions.
 
 * `excludes`: `undefined`
 

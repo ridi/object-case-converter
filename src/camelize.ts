@@ -13,7 +13,7 @@ const converters: { [style in CaseEnum]: (string?: string) => string } = {
   snakeCase,
 };
 
-export type Recursive = true | string[]| { excludes: string[] };
+export type Recursive = true | { excludes: string[] };
 export type Excludes = string[] | RegExp | ((key: string) => boolean);
 export interface Exception { [key: string]: string | ((key?: string) => string); }
 
@@ -39,13 +39,13 @@ function core<T>(target: any, options: Options): T {
 
   const isExclude = ((): (key: string) => boolean => {
     if (Array.isArray(excludes)) {
-      return (key) => excludes.includes(key);
-    }
-    if (typeof excludes === 'function') {
-      return (key) => excludes(key);
+      return key => excludes.includes(key);
     }
     if (isRegExp(excludes)) {
-      return (key) => excludes.test(key);
+      return key => excludes.test(key);
+    }
+    if (typeof excludes === 'function') {
+      return excludes;
     }
     return () => false;
   })();
@@ -54,11 +54,11 @@ function core<T>(target: any, options: Options): T {
     const convertFn = converters[style];
 
     if (excludes) {
-      return (key) => isExclude(key) ? key : convertFn(key);
+      return key => isExclude(key) ? key : convertFn(key);
     }
 
     if (exception) {
-      return (key) => {
+      return key => {
         const value = exception[key];
         if (value) {
           return typeof value === 'function' ? value(key) : value;
@@ -67,18 +67,15 @@ function core<T>(target: any, options: Options): T {
       };
     }
 
-    return (key) => force || isCamelCase(key) ? convertFn(key) : key;
+    return key => force || isCamelCase(key) ? convertFn(key) : key;
   })();
 
   const isRecursive = ((): (key?: string) => boolean => {
-    if (Array.isArray(recursive)) {
-      return (key) => recursive.includes(key);
-    }
     if (typeof recursive === 'object' && Array.isArray(recursive.excludes)) {
-      return (key) => !isExclude(key) && !recursive.excludes.includes(key);
+      return key => !isExclude(key) && !recursive.excludes.includes(key);
     }
     if (recursive === true) {
-      return (key) => !isExclude(key);
+      return key => !isExclude(key);
     }
     return () => false;
   })();
