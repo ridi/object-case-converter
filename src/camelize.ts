@@ -1,7 +1,5 @@
-import {
-  camelCase,
-  snakeCase,
-} from 'lodash-es';
+import camelCase from 'lodash/camelCase';
+import snakeCase from 'lodash/snakeCase';
 
 enum CaseEnum {
   Camel = 'camelCase',
