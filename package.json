@@ -1,6 +1,6 @@
 {
   "name": "@ridi/object-case-converter",
-  "version": "2.0.3",
+  "version": "2.0.4",
   "description": "Convert keys in an javascript object for some cases(camelCase, snake_case, etc.)",
   "main": "dist/camelize.js",
   "types": "dist/camelize.d.ts",
