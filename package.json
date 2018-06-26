@@ -38,6 +38,7 @@
     "clean": "rm -rf dist",
     "build": "tsc -p tsconfig.json",
     "lint": "tslint --config .tslintrc.js 'src/**/*.ts' --fix",
-    "test": "jest --no-cache"
+    "test": "jest --no-cache",
+    "prepublishOnly": "npm run build"
   }
 }
