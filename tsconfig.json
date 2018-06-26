@@ -9,7 +9,6 @@
     "noEmitOnError": true,
     "noImplicitAny": true,
     "noImplicitReturns": true,
-    "allowSyntheticDefaultImports": true,
     "removeComments": true,
     "target": "es5"
   },

@@ -7,9 +7,6 @@ module.exports = {
   transform: {
     '^.+\\.(t|j)sx?$': 'ts-jest',
   },
-  transformIgnorePatterns: [
-    'node_modules/(?!lodash-es/)',
-  ],
   testRegex: '(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$',
   globals: {
     'ts-jest': {

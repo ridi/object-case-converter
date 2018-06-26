@@ -37,7 +37,7 @@ function core<T>(target: any, options: Options): T {
 
   const isExclude = ((): (key: string) => boolean => {
     if (Array.isArray(excludes)) {
-      return (key: string) => excludes.includes(key);
+      return (key) => excludes.includes(key);
     }
     if (isRegExp(excludes)) {
       return (key) => excludes.test(key);

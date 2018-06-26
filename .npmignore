@@ -4,4 +4,6 @@ coverage/
 .travis.yml
 jest.config.js
 tsconfig-jest.json
-.idea
+.idea/
+yarn.lock
+package-lock.json
