@@ -3,7 +3,7 @@
   "version": "2.0.2",
   "description": "Convert keys in an javascript object for some cases(camelCase, snake_case, etc.)",
   "main": "dist/camelize.js",
-  "typings": "dist/camelize.d.ts",
+  "types": "dist/camelize.d.ts",
   "directories": {
     "test": "tests"
   },
@@ -25,7 +25,7 @@
   "devDependencies": {
     "@ridi/tslint-config": "0.1.0",
     "@types/jest": "^22.0.1",
-    "@types/lodash": "^4.14.109",
+    "@types/lodash": "^4.14.110",
     "jest": "^20.0.4",
     "ts-jest": "^22.0.1",
     "tslint": "^5.9.1",

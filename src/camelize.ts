@@ -1,5 +1,5 @@
-import camelCase from 'lodash/camelCase';
-import snakeCase from 'lodash/snakeCase';
+import camelCase = require('lodash/camelCase')
+import snakeCase = require('lodash/snakeCase')
 
 enum CaseEnum {
   Camel = 'camelCase',
@@ -9,7 +9,7 @@ enum CaseEnum {
 const converters: { [style in CaseEnum]: (string?: string) => string } = {
   camelCase,
   snakeCase,
-};
+}
 
 export type Recursive = true | { excludes: string[] };
 export type Excludes = string[] | RegExp | ((key: string) => boolean);
@@ -37,7 +37,7 @@ function core<T>(target: any, options: Options): T {
 
   const isExclude = ((): (key: string) => boolean => {
     if (Array.isArray(excludes)) {
-      return (key) => excludes.includes(key);
+      return (key: string) => excludes.includes(key);
     }
     if (isRegExp(excludes)) {
       return (key) => excludes.test(key);
