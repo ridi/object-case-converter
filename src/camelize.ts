@@ -11,7 +11,7 @@ const converters: { [style in CaseEnum]: (string?: string) => string } = {
   snakeCase,
 }
 
-export type Recursive = true | { excludes: string[] };
+export type Recursive = boolean | { excludes: string[] };
 export type Excludes = string[] | RegExp | ((key: string) => boolean);
 export interface Exception { [key: string]: string | ((key?: string) => string); }
 
